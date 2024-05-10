@@ -5,9 +5,6 @@ import (
 	"anon_chat_tg/handlers"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 func main() {
@@ -26,9 +23,6 @@ func main() {
 
 	updatesChan, err := bot.GetUpdatesChan(updates)
 	onFail("Failed to create update channel %v", err)
-
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
 	for {
 		select {
