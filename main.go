@@ -1,4 +1,4 @@
-package anon_chat_tg
+package main
 
 import (
 	"anon_chat_tg/config"
@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	cfg, err := config.LoadConfig()
+	cfg, err := config.LoadConfig("config/config.json")
 	onFail("Failed to load config %v", err)
 
 	bot, err := tgbotapi.NewBotAPI(cfg.TelegramToken)

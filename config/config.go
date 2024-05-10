@@ -10,8 +10,8 @@ type Config struct {
 	DatabaseURL   string `json:"database_url"`
 }
 
-func LoadConfig() (*Config, error) {
-	data, err := ioutil.ReadFile("config.json")
+func LoadConfig(configFilePath string) (*Config, error) {
+	data, err := ioutil.ReadFile(configFilePath)
 	if err != nil {
 		return nil, err
 	}
