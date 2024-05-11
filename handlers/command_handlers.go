@@ -51,6 +51,14 @@ func (h *CommandHandler) HandleCommand(tgUpdate tgbotapi.Update) {
 				onFail("Failed to send message %v", err)
 			} else {
 				h.db.BeginConversation(tgUpdate.Message.Chat.ID, users[0].ChatId)
+
+				msg := tgbotapi.NewMessage(tgUpdate.Message.Chat.ID, h.messages["conversation_begin"].Message)
+				_, err := h.bot.Send(msg)
+				onFail("Failed to send message %v", err)
+
+				msg.ChatID = users[0].ChatId
+				_, err = h.bot.Send(msg)
+				onFail("Failed to send message %v", err)
 			}
 		}
 	}

@@ -40,7 +40,7 @@ func connectDB(dbUrl string) (*sql.DB, error) {
 
 // Связывание подходящих юзеров и удаление их из очереди
 func (db *DB) BeginConversation(u1chatid int64, u2chatid int64) {
-	_, err := db.Exec("INSERT INTO conversations (user1_chatidid, user2chatid) VALUES ($1, $2)", u1chatid, u2chatid)
+	_, err := db.Exec("INSERT INTO conversations (user1_chatidid, user2_chatid) VALUES ($1, $2)", u1chatid, u2chatid)
 	if err != nil {
 		log.Fatalf("Failed to create conversation %v", err)
 		return
