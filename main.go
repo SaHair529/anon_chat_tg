@@ -15,7 +15,7 @@ func main() {
 	bot, err := tgbotapi.NewBotAPI(cfg.TelegramToken)
 	onFail("Failed to create bot %v", err)
 
-	db, err := db2.NewDB()
+	db, err := db2.NewDB(cfg.DatabaseURL)
 	onFail("Failed to connect db %v", err)
 
 	messageHandler := handlers.NewMessageHandler(bot, db)

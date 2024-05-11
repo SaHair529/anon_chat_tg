@@ -16,16 +16,16 @@ type User struct {
 	City string
 }
 
-func NewDB() (*DB, error) {
-	db, err := connectDB()
+func NewDB(dbUrl string) (*DB, error) {
+	db, err := connectDB(dbUrl)
 	if err != nil {
 		return nil, err
 	}
 	return &DB{db}, nil
 }
 
-func connectDB() (*sql.DB, error) {
-	db, err := sql.Open("postgres", "postgres://anon_chat_tg@localhost/anon_chat_tg?sslmode=disable")
+func connectDB(dbUrl string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", dbUrl)
 	if err != nil {
 		return nil, err
 	}
