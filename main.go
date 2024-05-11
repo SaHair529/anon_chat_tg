@@ -18,7 +18,7 @@ func main() {
 	db, err := db2.NewDB()
 	onFail("Failed to connect db %v", err)
 
-	messageHandler := handlers.NewMessageHandler(bot)
+	messageHandler := handlers.NewMessageHandler(bot, db)
 	commandHandler := handlers.NewCommandHandler(bot)
 	callbackHandler := handlers.NewCallbackHandler(bot)
 
