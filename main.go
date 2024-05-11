@@ -19,8 +19,8 @@ func main() {
 	onFail("Failed to connect db %v", err)
 
 	messageHandler := handlers.NewMessageHandler(bot, db)
-	commandHandler := handlers.NewCommandHandler(bot)
-	callbackHandler := handlers.NewCallbackHandler(bot)
+	commandHandler := handlers.NewCommandHandler(bot, db)
+	callbackHandler := handlers.NewCallbackHandler(bot, db)
 
 	updates := tgbotapi.NewUpdate(0)
 	updates.Timeout = 60

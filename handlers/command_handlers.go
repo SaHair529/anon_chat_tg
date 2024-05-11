@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"anon_chat_tg/db"
 	"encoding/json"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
@@ -14,9 +15,10 @@ type Message struct {
 type CommandHandler struct {
 	bot *tgbotapi.BotAPI
 	messages map[string]Message
+	db *db.DB
 }
 
-func NewCommandHandler(bot *tgbotapi.BotAPI) *CommandHandler {
+func NewCommandHandler(bot *tgbotapi.BotAPI, db *db.DB) *CommandHandler {
 	messagesFile, err := os.Open("handlers/messages.json")
 	onFail("Failed to open file %v", err)
 	defer messagesFile.Close()
@@ -27,6 +29,7 @@ func NewCommandHandler(bot *tgbotapi.BotAPI) *CommandHandler {
 	return &CommandHandler{
 		bot: bot,
 		messages: messages,
+		db: db,
 	}
 }
 
