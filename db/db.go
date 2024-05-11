@@ -38,8 +38,8 @@ func connectDB() (*sql.DB, error) {
 	return db, nil
 }
 
-func (db *DB) AddUserToQueue(userChatId int, city string) error {
-	_, err := db.Exec("INSERT INTO queue (chatid, city) VALUES ($1, $2)")
+func (db *DB) AddUserToQueue(userChatId int64, city string) error {
+	_, err := db.Exec("INSERT INTO queue (chatid, city) VALUES ($1, $2)", userChatId, city)
 	onFail("Failed to add user %v", err)
 	return err
 }
