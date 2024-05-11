@@ -36,9 +36,17 @@ func NewCommandHandler(bot *tgbotapi.BotAPI, db *db.DB) *CommandHandler {
 func (h *CommandHandler) HandleCommand(tgUpdate tgbotapi.Update) {
 	switch tgUpdate.Message.Command() {
 	case "start":
-		msg := tgbotapi.NewMessage(tgUpdate.Message.Chat.ID, h.messages["start_without_city"].Message)
-		_, err := h.bot.Send(msg)
-		onFail("Failed to send message %v", err)
+		commandArgs := tgUpdate.Message.CommandArguments()
+		if len(commandArgs) == 0 {
+			msg := tgbotapi.NewMessage(tgUpdate.Message.Chat.ID, h.messages["start_without_city"].Message)
+			_, err := h.bot.Send(msg)
+			onFail("Failed to send message %v", err)
+		}	else {
+			// todo добавить юзера в очередь
+			msg := tgbotapi.NewMessage(tgUpdate.Message.Chat.ID, "Вы ввели город "+commandArgs)
+			_, err := h.bot.Send(msg)
+			onFail("Failed to send message %v", err)
+		}
 	}
 }
 
