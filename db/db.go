@@ -12,7 +12,7 @@ type DB struct {
 
 type User struct {
 	ID int
-	ChatId int
+	ChatId int64
 	City string
 }
 
@@ -36,6 +36,17 @@ func connectDB(dbUrl string) (*sql.DB, error) {
 	}
 
 	return db, nil
+}
+
+// Связывание подходящих юзеров и удаление их из очереди
+func (db *DB) BeginConversation(u1chatid int64, u2chatid int64) {
+	_, err := db.Exec("INSERT INTO conversations (user1_chatidid, user2chatid) VALUES ($1, $2)", u1chatid, u2chatid)
+	if err != nil {
+		log.Fatalf("Failed to create conversation %v", err)
+		return
+	}
+	_, err = db.Exec("DELETE FROM queue WHERE id IN ($1, $2)", u1chatid, u2chatid)
+	onFail("Failed to delete users from queue %v", err)
 }
 
 func (db *DB) AddUserToQueue(userChatId int64, city string) error {
