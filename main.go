@@ -2,6 +2,7 @@ package main
 
 import (
 	"anon_chat_tg/config"
+	db2 "anon_chat_tg/db"
 	"anon_chat_tg/handlers"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
@@ -13,6 +14,9 @@ func main() {
 
 	bot, err := tgbotapi.NewBotAPI(cfg.TelegramToken)
 	onFail("Failed to create bot %v", err)
+
+	db, err := db2.NewDB()
+	onFail("Failed to connect db %v", err)
 
 	messageHandler := handlers.NewMessageHandler(bot)
 	commandHandler := handlers.NewCommandHandler(bot)

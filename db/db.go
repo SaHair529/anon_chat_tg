@@ -5,19 +5,45 @@ import (
 	"log"
 )
 
+type DB struct {
+	*sql.DB
+}
+
 type User struct {
 	ID int
 	ChatId int
 	City string
 }
 
-func AddUserToQueue(db *sql.DB, userChatId int, city string) error {
+func NewDB() (*DB, error) {
+	db, err := connectDB()
+	if err != nil {
+		return nil, err
+	}
+	return &DB{db}, nil
+}
+
+func connectDB() (*sql.DB, error) {
+	db, err := sql.Open("postgres", "postgres://anon_chat_tg@localhost/anon_chat_tg?sslmode=disable")
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+
+func (db *DB) AddUserToQueue(userChatId int, city string) error {
 	_, err := db.Exec("INSERT INTO users (chatid, city) VALUES ($1, $2)")
 	onFail("Failed to add user %v", err)
 	return err
 }
 
-func GetUsersFromQueueByCity(db *sql.DB, city string) ([]User, error) {
+func (db *DB) GetUsersFromQueueByCity(city string) ([]User, error) {
 	rows, err := db.Query("SELECT id, chatid, city FROM users WHERE city = $1", city)
 	onFail("Failed to get users by city %v", err)
 	defer rows.Close()
