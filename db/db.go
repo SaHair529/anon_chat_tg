@@ -39,14 +39,14 @@ func connectDB() (*sql.DB, error) {
 }
 
 func (db *DB) AddUserToQueue(userChatId int, city string) error {
-	_, err := db.Exec("INSERT INTO users (chatid, city) VALUES ($1, $2)")
+	_, err := db.Exec("INSERT INTO queue (chatid, city) VALUES ($1, $2)")
 	onFail("Failed to add user %v", err)
 	return err
 }
 
 func (db *DB) GetUsersFromQueueByCity(city string) ([]User, error) {
-	rows, err := db.Query("SELECT id, chatid, city FROM users WHERE city = $1", city)
-	onFail("Failed to get users by city %v", err)
+	rows, err := db.Query("SELECT id, chatid, city FROM queue WHERE city = $1", city)
+	onFail("Failed to get queue by city %v", err)
 	defer rows.Close()
 	
 	var users []User
