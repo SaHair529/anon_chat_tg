@@ -42,10 +42,14 @@ func (h *CommandHandler) HandleCommand(tgUpdate tgbotapi.Update) {
 			_, err := h.bot.Send(msg)
 			onFail("Failed to send message %v", err)
 		}	else {
-			// todo добавить юзера в очередь
-			msg := tgbotapi.NewMessage(tgUpdate.Message.Chat.ID, "Вы ввели город "+commandArgs)
-			_, err := h.bot.Send(msg)
-			onFail("Failed to send message %v", err)
+			users, err := h.db.GetUsersFromQueueByCity(commandArgs)
+			onFail("Failed to get users by city from db %v", err)
+			if len(users) == 0 {
+				h.db.AddUserToQueue(tgUpdate.Message.Chat.ID, commandArgs)
+				msg := tgbotapi.NewMessage(tgUpdate.Message.Chat.ID, h.messages["added_to_queue"].Message)
+				_, err := h.bot.Send(msg)
+				onFail("Failed to send message %v", err)
+			}
 		}
 	}
 }
