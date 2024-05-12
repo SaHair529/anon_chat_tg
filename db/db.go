@@ -53,6 +53,25 @@ func (db *DB) IsUserAlreadyInQueue(uchatid int64) bool {
 	return err != sql.ErrNoRows
 }
 
+func (db *DB) IsUserHasConversation(uchatid int64) bool {
+	var userID int64
+	err := db.QueryRow("SELECT id FROM conversations WHERE user1_chatidid = $1 OR user2_chatid = $1", uchatid).Scan(&userID)
+	if err != nil && err != sql.ErrNoRows {
+		log.Printf("Failed to execute query: %v", err)
+	}
+	return err != sql.ErrNoRows
+}
+
+func (db *DB) DeleteUserFromQueue(uchatid int64) {
+	_, err := db.Exec("DELETE FROM queue WHERE chatid = $1", uchatid)
+	onFail("Failed to delete user from queue: %v", err)
+}
+
+func (db *DB) DeleteUserConversation(uchatid int64) {
+	_, err := db.Exec("DELETE FROM conversations WHERE user1_chatidid = $1 OR user2_chatid = $1", uchatid)
+	onFail("Failed to delete user conversation: %v", err)
+}
+
 func (db *DB) GetUserConversation(uchatid int64) (conversation Conversation, err error) {
 	var (
 		conversationID int64

@@ -10,5 +10,17 @@
     },
     "already_on_queue": {
         "message": "Вы уже находитесь в поиске, ожидайте! ⏳"
+    },
+    "deleted_from_queue": {
+        "message": "Поиск остановлен, возвращайтесь скорее ;)"
+    },
+    "deleted_conversation": {
+        "message": "Беседа завершена"
+    },
+    "companion_stopped_conversation": {
+        "message": "Собеседник завершил беседу"
+    },
+    "nothing_to_stop": {
+        "message": "Вы не находитесь в очереди"
     }
 }

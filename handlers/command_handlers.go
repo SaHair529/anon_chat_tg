@@ -68,6 +68,32 @@ func (h *CommandHandler) HandleCommand(tgUpdate tgbotapi.Update) {
 				onFail("Failed to send message %v", err)
 			}
 		}
+	case "stop":
+		if h.db.IsUserAlreadyInQueue(tgUpdate.Message.Chat.ID) {
+			h.db.DeleteUserFromQueue(tgUpdate.Message.Chat.ID)
+			msg := tgbotapi.NewMessage(tgUpdate.Message.Chat.ID, h.messages["deleted_from_queue"].Message)
+			_, err := h.bot.Send(msg)
+			onFail("Failed to send message %v", err)
+		} else if h.db.IsUserHasConversation(tgUpdate.Message.Chat.ID) {
+			conversation, err := h.db.GetUserConversation(tgUpdate.Message.Chat.ID)
+			if err != nil {
+				log.Printf("Failed to get conversation: %v", err)
+			}
+
+			h.db.DeleteUserConversation(tgUpdate.Message.Chat.ID)
+
+			msg := tgbotapi.NewMessage(tgUpdate.Message.Chat.ID, h.messages["deleted_conversation"].Message)
+			_, err = h.bot.Send(msg)
+			onFail("Failed to send message %v", err)
+
+			msg = tgbotapi.NewMessage(conversation.OtherUserChatId, h.messages["companion_stopped_conversation"].Message)
+			_, err = h.bot.Send(msg)
+			onFail("Failed to send message %v", err)
+		} else {
+			msg := tgbotapi.NewMessage(tgUpdate.Message.Chat.ID, h.messages["nothing_to_stop"].Message)
+			_, err := h.bot.Send(msg)
+			onFail("Failed to send message %v", err)
+		}
 	}
 }
 
