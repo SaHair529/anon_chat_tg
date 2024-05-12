@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/lib/pq"
 	"log"
 )
@@ -14,6 +15,11 @@ type User struct {
 	ID int
 	ChatId int64
 	City string
+}
+
+type Conversation struct {
+	ID int64
+	OtherUserChatId int64
 }
 
 func NewDB(dbUrl string) (*DB, error) {
@@ -36,6 +42,34 @@ func connectDB(dbUrl string) (*sql.DB, error) {
 	}
 
 	return db, nil
+}
+
+func (db *DB) GetUserConversation(uchatid int64) (conversation Conversation, err error) {
+	var (
+		conversationID int64
+		user1ChatID    int64
+		user2ChatID    int64
+	)
+	err = db.QueryRow("SELECT id, user1_chatidid, user2_chatid FROM conversations WHERE user1_chatidid=$1 OR user2_chatid=$1", uchatid).
+		Scan(&conversationID, &user1ChatID, &user2ChatID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return Conversation{}, fmt.Errorf("conversation not found for user with chat id %d", uchatid)
+		}
+		return Conversation{}, fmt.Errorf("failed to fetch conversation: %v", err)
+	}
+
+	var otherUserChatId int64
+	if user1ChatID == uchatid {
+		otherUserChatId = user2ChatID
+	} else {
+		otherUserChatId = user1ChatID
+	}
+
+	return Conversation{
+		ID: conversationID,
+		OtherUserChatId: otherUserChatId,
+	}, nil
 }
 
 // Связывание подходящих юзеров и удаление их из очереди

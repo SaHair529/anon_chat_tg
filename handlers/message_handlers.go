@@ -19,9 +19,16 @@ func NewMessageHandler(bot *tgbotapi.BotAPI, db *db.DB) *MessageHandler {
 }
 
 func (h *MessageHandler) HandleMessage(tgUpdate tgbotapi.Update) {
-	newMsg := tgbotapi.NewMessage(tgUpdate.Message.Chat.ID, "HandleMessage")
-	_, err := h.bot.Send(newMsg)
+	conversation, err := h.db.GetUserConversation(tgUpdate.Message.Chat.ID)
 	if err != nil {
-		log.Panic(err)
+		log.Fatalf("Failed to get conversation: %v", err)
+	}
+
+	if conversation.ID != 0 {
+		msg := tgbotapi.NewMessage(conversation.OtherUserChatId, tgUpdate.Message.Text)
+		_, err := h.bot.Send(msg)
+		if err != nil {
+			log.Fatalf("Failed to send message %v: ", err)
+		}
 	}
 }
