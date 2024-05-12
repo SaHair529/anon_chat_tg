@@ -66,6 +66,6 @@ func (h *CommandHandler) HandleCommand(tgUpdate tgbotapi.Update) {
 
 func onFail(message string, err error) {
 	if err != nil {
-		log.Fatalf(message, err)
+		log.Printf(message, err)
 	}
 }

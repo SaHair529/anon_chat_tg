@@ -46,6 +46,6 @@ func main() {
 
 func onFail(message string, err error) {
 	if err != nil {
-		log.Fatalf(message, err)
+		log.Printf(message, err)
 	}
 }

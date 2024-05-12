@@ -21,14 +21,14 @@ func NewMessageHandler(bot *tgbotapi.BotAPI, db *db.DB) *MessageHandler {
 func (h *MessageHandler) HandleMessage(tgUpdate tgbotapi.Update) {
 	conversation, err := h.db.GetUserConversation(tgUpdate.Message.Chat.ID)
 	if err != nil {
-		log.Fatalf("Failed to get conversation: %v", err)
+		log.Printf("Failed to get conversation: %v", err)
 	}
 
 	if conversation.ID != 0 {
 		msg := tgbotapi.NewMessage(conversation.OtherUserChatId, tgUpdate.Message.Text)
 		_, err := h.bot.Send(msg)
 		if err != nil {
-			log.Fatalf("Failed to send message %v: ", err)
+			log.Printf("Failed to send message %v: ", err)
 		}
 	}
 }

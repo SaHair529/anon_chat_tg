@@ -76,7 +76,7 @@ func (db *DB) GetUserConversation(uchatid int64) (conversation Conversation, err
 func (db *DB) BeginConversation(u1chatid int64, u2chatid int64) {
 	_, err := db.Exec("INSERT INTO conversations (user1_chatidid, user2_chatid) VALUES ($1, $2)", u1chatid, u2chatid)
 	if err != nil {
-		log.Fatalf("Failed to create conversation %v", err)
+		log.Printf("Failed to create conversation %v", err)
 		return
 	}
 	_, err = db.Exec("DELETE FROM queue WHERE id IN ($1::bigint, $2::bigint)", u1chatid, u2chatid)
@@ -106,6 +106,6 @@ func (db *DB) GetUsersFromQueueByCity(city string) ([]User, error) {
 
 func onFail(message string, err error) {
 	if err != nil {
-		log.Fatalf(message, err)
+		log.Printf(message, err)
 	}
 }
