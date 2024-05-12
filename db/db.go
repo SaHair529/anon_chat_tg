@@ -88,7 +88,7 @@ func (db *DB) BeginConversation(u1chatid int64, u2chatid int64) {
 		log.Printf("Failed to create conversation %v", err)
 		return
 	}
-	_, err = db.Exec("DELETE FROM queue WHERE id IN ($1::bigint, $2::bigint)", u1chatid, u2chatid)
+	_, err = db.Exec("DELETE FROM queue WHERE chatid IN ($1, $2)", u1chatid, u2chatid)
 	onFail("Failed to delete users from queue %v", err)
 }
 
