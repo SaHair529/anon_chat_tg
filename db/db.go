@@ -44,6 +44,15 @@ func connectDB(dbUrl string) (*sql.DB, error) {
 	return db, nil
 }
 
+func (db *DB) IsUserAlreadyInQueue(uchatid int64) bool {
+	var userID int64
+	err := db.QueryRow("SELECT id FROM queue WHERE chatid = $1", uchatid).Scan(&userID)
+	if err != nil && err != sql.ErrNoRows {
+		log.Printf("Failed to execute query: %v", err)
+	}
+	return err != sql.ErrNoRows
+}
+
 func (db *DB) GetUserConversation(uchatid int64) (conversation Conversation, err error) {
 	var (
 		conversationID int64

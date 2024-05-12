@@ -42,6 +42,13 @@ func (h *CommandHandler) HandleCommand(tgUpdate tgbotapi.Update) {
 			_, err := h.bot.Send(msg)
 			onFail("Failed to send message %v", err)
 		}	else {
+			if h.db.IsUserAlreadyInQueue(tgUpdate.Message.Chat.ID) {
+				msg := tgbotapi.NewMessage(tgUpdate.Message.Chat.ID, h.messages["already_on_queue"].Message)
+				_, err := h.bot.Send(msg)
+				onFail("Failed to send message %v", err)
+				return
+			}
+
 			users, err := h.db.GetUsersFromQueueByCity(commandArgs)
 			onFail("Failed to get users by city from db %v", err)
 			if len(users) == 0 {
