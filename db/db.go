@@ -5,6 +5,7 @@ import (
 	"fmt"
 	_ "github.com/lib/pq"
 	"log"
+	"strings"
 )
 
 type DB struct {
@@ -112,7 +113,7 @@ func (db *DB) BeginConversation(u1chatid int64, u2chatid int64) {
 }
 
 func (db *DB) AddUserToQueue(userChatId int64, city string) error {
-	_, err := db.Exec("INSERT INTO queue (chatid, city) VALUES ($1, $2)", userChatId, city)
+	_, err := db.Exec("INSERT INTO queue (chatid, city) VALUES ($1, $2)", userChatId, strings.ToLower(strings.TrimSpace(city)))
 	onFail("Failed to add user %v", err)
 	return err
 }
